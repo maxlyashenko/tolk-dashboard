@@ -5,7 +5,7 @@ from flask import (Flask, request, jsonify, render_template,
                    session, redirect, url_for, g)
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "tolk-change-me-in-production")
+app.secret_key = os.environ.get("SECRET_KEY", "Maxon")
 DB_PATH      = os.environ.get("DB_PATH", "tolk.db")
 APP_PASSWORD = os.environ.get("APP_PASSWORD", "tolk2026")
 
