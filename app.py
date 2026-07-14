@@ -6,6 +6,8 @@ from flask import (Flask, request, jsonify, render_template,
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "Maxon")
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 DB_PATH      = os.environ.get("DB_PATH", "tolk.db")
 APP_PASSWORD = os.environ.get("APP_PASSWORD", "tolk2026")
 
