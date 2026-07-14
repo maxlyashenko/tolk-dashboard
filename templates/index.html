@@ -75,19 +75,11 @@ input:focus,select:focus{border-color:#2E6DA3}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid #C9C7BC;border-top-color:#0E1C29;border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .saving{opacity:.6;pointer-events:none}
+.ec:hover,.ec-sel:hover{background:#F0F7FF !important;}
+.ec:hover td,.ec-sel:hover td{outline:.5px dashed #2E6DA3;}
 </style>
 </head>
 <body>
-<div id="loginOverlay" style="display:none;position:fixed;inset:0;background:#F4F3EF;z-index:999;align-items:center;justify-content:center;">
-  <div style="background:#fff;border:.5px solid #E0DED6;border-radius:14px;padding:36px 40px;width:300px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.08)">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2E6DA3;margin-bottom:8px">Tolk Agency</div>
-    <h1 style="font-size:20px;margin-bottom:4px;color:#0E1C29">Sales Dashboard</h1>
-    <p style="font-size:13px;color:#5F5E5A;margin-bottom:20px">Введи пароль для входу</p>
-    <input id="loginPw" type="password" placeholder="Пароль" style="margin-bottom:10px;height:40px;border-radius:8px;border:.5px solid #C9C7BC;padding:0 12px;font-size:14px;width:100%;outline:none"/>
-    <div id="loginErr" style="color:#A32D2D;font-size:13px;margin-bottom:8px;min-height:18px"></div>
-    <button onclick="doLogin()" style="width:100%;height:40px;border-radius:8px;background:#0E1C29;color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer">Увійти</button>
-  </div>
-</div>
 <div class="w">
 
 <header>
@@ -100,7 +92,7 @@ input:focus,select:focus{border-color:#2E6DA3}
     <button class="btn bp" id="btnPay">+ &#x41e;&#x43f;&#x43b;&#x430;&#x442;&#x430;</button>
     <button class="btn bg" id="btnExp">+ &#x412;&#x438;&#x442;&#x440;&#x430;&#x442;&#x430;</button>
     <button class="btn bg" id="btnDeal">+ &#x423;&#x433;&#x43e;&#x434;&#x430;</button>
-    <button class="btn bg" onclick="localStorage.removeItem('tolk_token');location.reload()">&#x412;&#x438;&#x445;&#x456;&#x434;</button>
+    <a href="/logout" class="btn bg" style="text-decoration:none">&#x412;&#x438;&#x445;&#x456;&#x434;</a>
   </div>
 </header>
 
@@ -328,38 +320,10 @@ function compExp(){return expenses.filter(function(e){return e.who==="company";}
 function card(lb,v,cls,sub){return '<div class="card"><div class="lb">'+lb+'</div><div class="vl '+(cls||"")+'">'+v+'</div>'+(sub?'<div style="font-size:11px;color:#5F5E5A;margin-top:2px">'+sub+'</div>':'')+'</div>';}
 
 // ─── API ───────────────────────────────────────────────────────────────────
-async function doLogin(){
-  var pw=document.getElementById("loginPw").value;
-  if(!pw){document.getElementById("loginErr").textContent="Введи пароль";return;}
-  try{
-    var r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pw})});
-    var d=await r.json();
-    if(d.token){
-      localStorage.setItem("tolk_token",d.token);
-      document.getElementById("loginOverlay").style.display="none";
-      document.getElementById("loadMsg").style.display="flex";
-      loadAll();
-    } else {
-      document.getElementById("loginErr").textContent=d.error||"Невірний пароль";
-    }
-  }catch(e){document.getElementById("loginErr").textContent="Помилка з`єднання";}
-}
-
-document.addEventListener("keydown",function(e){
-  if(e.key==="Enter"&&document.getElementById("loginOverlay").style.display!=="none") doLogin();
-});
-
 async function api(method,url,data){
-  var token=localStorage.getItem("tolk_token")||"";
-  var opts={method:method,headers:{"Content-Type":"application/json","X-Auth-Token":token}};
+  var opts={method:method,headers:{"Content-Type":"application/json"}};
   if(data) opts.body=JSON.stringify(data);
   var r=await fetch(url,opts);
-  if(r.status===401){
-    localStorage.removeItem("tolk_token");
-    document.getElementById("loginOverlay").style.display="flex";
-    document.getElementById("appShell").style.display="none";
-    throw new Error("unauthorized");
-  }
   if(!r.ok) throw new Error("API error "+r.status);
   return r.json();
 }
@@ -978,17 +942,9 @@ function renderAll(){
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-var _token=localStorage.getItem("tolk_token");
-if(_token){
-  loadAll().catch(function(e){
-    if(e.message!=="unauthorized"){
-      document.getElementById("loadMsg").textContent="Помилка: "+e.message;
-    }
-  });
-} else {
-  document.getElementById("loadMsg").style.display="none";
-  document.getElementById("loginOverlay").style.display="flex";
-}
+loadAll().catch(function(e){
+  document.getElementById("loadMsg").textContent="Помилка завантаження: "+e.message;
+});
 </script>
 </body>
 </html>
