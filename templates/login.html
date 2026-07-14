@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Tolk Sales Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#F4F3EF;color:#16191C;padding:20px 14px 60px}
+.w{max-width:1040px;margin:0 auto}
+h1{font-size:21px;font-weight:700;color:#0E1C29}
+h2{font-size:13px;font-weight:600;color:#0E1C29;margin-bottom:9px}
+.ey{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2E6DA3;margin-bottom:4px}
+.su{font-size:13px;color:#5F5E5A;margin-top:2px}
+header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.hright{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card{background:#EDECEA;border-radius:10px;padding:12px 14px}
+.wh{background:#fff;border:.5px solid #E0DED6}
+.g6{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:9px;margin-bottom:15px}
+.g5{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:9px;margin-bottom:13px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.g2,.g3{grid-template-columns:1fr}}
+.lb{font-size:11px;color:#5F5E5A;margin-bottom:2px}
+.vl{font-size:18px;font-weight:700;color:#0E1C29}
+.gr{color:#0F6E56}.bl{color:#2E6DA3}.am{color:#854F0B}.rd{color:#A32D2D}
+.pr{background:#E0DED6;border-radius:6px;height:10px;overflow:hidden;margin:5px 0 3px}
+.pf{height:100%;border-radius:6px}
+.btn{height:31px;border-radius:7px;padding:0 11px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.bp{background:#0E1C29;color:#fff;border:none}.bp:hover{background:#1a2e42}
+.bg{background:#fff;color:#16191C;border:.5px solid #C9C7BC}.bg:hover{background:#F4F3EF}
+.bsm{height:24px;padding:0 7px;font-size:11px;border-radius:5px}
+.bd{color:#A32D2D;background:#fff;border:.5px solid #e8c5c5}
+.tabs{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px}
+.tab{padding:5px 11px;border-radius:7px;font-size:13px;cursor:pointer;border:.5px solid transparent;color:#5F5E5A;white-space:nowrap}
+.tab.on{background:#0E1C29;color:#fff}.tab:hover:not(.on){background:#E4E2D8}
+.stabs{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:10px}
+.stab{padding:3px 9px;border-radius:6px;font-size:12px;cursor:pointer;background:#fff;border:.5px solid #E0DED6;color:#5F5E5A;white-space:nowrap}
+.stab.on{background:#2E6DA3;color:#fff;border-color:#2E6DA3}
+.pn{display:none}.pn.on{display:block}
+.t{width:100%;border-collapse:collapse;font-size:13px}
+.t th{text-align:left;padding:5px 8px;font-size:10px;font-weight:600;color:#5F5E5A;border-bottom:.5px solid #E0DED6;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;background:#FAFAF8;position:sticky;top:0}
+.t td{padding:6px 8px;border-bottom:.5px solid #F0EEE8;vertical-align:middle}
+.t tr:hover td{background:#FAFAF8}
+.t tfoot td{font-weight:700;background:#F4F3EF;border-top:.5px solid #E0DED6}
+.pi{display:inline-block;padding:2px 6px;border-radius:4px;font-weight:600;font-size:11px}
+.b1{background:#E1F5EE;color:#085041}.b2{background:#FAEEDA;color:#854F0B}.b3{background:#E6F1FB;color:#185FA5}
+.b4{background:#FCEBEB;color:#A32D2D}.b5{background:#F1EFE8;color:#5F5E5A}
+.al{padding:8px 12px;border-radius:7px;font-size:13px;margin-bottom:6px;line-height:1.5}
+.ag{background:#E1F5EE;color:#085041}.aa{background:#FAEEDA;color:#854F0B}
+.ar{background:#FCEBEB;color:#A32D2D}.ai{background:#fff;border:.5px solid #E0DED6}
+.br{margin-bottom:7px}
+.bm{display:flex;justify-content:space-between;font-size:12px;color:#5F5E5A;margin-bottom:2px}
+.bt{background:#E4E2D8;border-radius:4px;height:7px;overflow:hidden}
+.bf{height:100%}
+.fc{background:#fff;border:.5px solid #E0DED6;border-radius:10px;padding:14px;margin-bottom:14px;display:none}
+.fg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:10px}
+.fg .sp{grid-column:1/4}
+.fg .sp2{grid-column:1/3}
+@media(max-width:620px){.fg{grid-template-columns:1fr 1fr}.fg .sp,.fg .sp2{grid-column:1/3}}
+label{font-size:12px;color:#5F5E5A;display:block;margin-bottom:2px}
+input,select{height:31px;border-radius:7px;border:.5px solid #C9C7BC;padding:0 9px;font-size:13px;background:#fff;color:#16191C;width:100%;outline:none}
+input:focus,select:focus{border-color:#2E6DA3}
+.cb{position:relative;width:100%;height:190px}
+.cbt{position:relative;width:100%;height:250px}
+.fl{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.fl label{font-size:12px;color:#5F5E5A;margin:0;width:auto}
+.fl select{width:auto;height:28px;font-size:12px}
+.de{display:flex;align-items:flex-start;gap:7px;padding:8px 11px;background:#fff;border:.5px solid #E0DED6;border-radius:7px;font-size:13px;flex-wrap:wrap;margin-bottom:4px}
+.netbox{background:linear-gradient(135deg,#0E1C29,#1a3a52);border-radius:10px;padding:13px 15px;color:#fff;margin-bottom:15px}
+.netbox .lb{color:rgba(255,255,255,.6)}
+.netbox .vl{color:#fff;font-size:17px}
+.ie{border:.5px solid #2E6DA3;border-radius:5px;padding:2px 6px;font-size:12px;width:100px;height:26px;background:#EEF4FB}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #C9C7BC;border-top-color:#0E1C29;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.saving{opacity:.6;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="w">
+
+<header>
+  <div>
+    <div class="ey">Tolk Agency &middot; Head of Sales</div>
+    <h1>&#x414;&#x430;&#x448;&#x431;&#x43e;&#x440;&#x434; &#x43f;&#x440;&#x43e;&#x434;&#x430;&#x436;</h1>
+    <p class="su">&#x420;&#x435;&#x430;&#x43b;&#x44c;&#x43d;&#x456; &#x434;&#x430;&#x43d;&#x456; &middot; &#x432;&#x441;&#x435; &#x440;&#x435;&#x434;&#x430;&#x433;&#x443;&#x454;&#x442;&#x44c;&#x441;&#x44f; &middot; &#x437;&#x431;&#x435;&#x440;&#x456;&#x433;&#x430;&#x454;&#x442;&#x44c;&#x441;&#x44f; &#x43d;&#x430; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x456;</p>
+  </div>
+  <div class="hright">
+    <button class="btn bp" id="btnPay">+ &#x41e;&#x43f;&#x43b;&#x430;&#x442;&#x430;</button>
+    <button class="btn bg" id="btnExp">+ &#x412;&#x438;&#x442;&#x440;&#x430;&#x442;&#x430;</button>
+    <button class="btn bg" id="btnDeal">+ &#x423;&#x433;&#x43e;&#x434;&#x430;</button>
+    <a href="/logout" class="btn bg" style="text-decoration:none">&#x412;&#x438;&#x445;&#x456;&#x434;</a>
+  </div>
+</header>
+
+<div id="loadMsg" class="al ai" style="margin-bottom:14px">&#x417;&#x430;&#x432;&#x430;&#x43d;&#x442;&#x430;&#x436;&#x443;&#x454;&#x43c;&#x43e; &#x434;&#x430;&#x43d;&#x456;... <span class="spinner"></span></div>
+
+<div id="appShell" style="display:none">
+
+<div class="g6" id="kpis"></div>
+<div class="netbox" id="netBox" style="margin-bottom:15px"></div>
+<div class="card wh" style="margin-bottom:15px" id="planCard"></div>
+
+<!-- PAY FORM -->
+<div class="fc" id="payForm">
+  <h2 id="payFT" style="margin-bottom:10px"></h2>
+  <div class="fg">
+    <div class="sp"><label>&#x41a;&#x43b;&#x456;&#x454;&#x43d;&#x442;</label><input id="pn"/></div>
+    <div><label>&#x414;&#x430;&#x442;&#x430;</label><input id="pd" type="date"/></div>
+    <div><label>&#x41f;&#x43e;&#x441;&#x43b;&#x443;&#x433;&#x430;</label><select id="ps"></select></div>
+    <div><label>&#x414;&#x436;&#x435;&#x440;&#x435;&#x43b;&#x43e;</label><select id="pr"></select></div>
+    <div><label>&#x421;&#x442;&#x430;&#x442;&#x443;&#x441;</label>
+      <select id="pst">
+        <option value="paid">&#x41e;&#x43f;&#x43b;&#x430;&#x447;&#x435;&#x43d;&#x43e; 100%</option>
+        <option value="part">50% &#x43e;&#x43f;&#x43b;&#x430;&#x442;&#x430;</option>
+        <option value="wait">&#x416;&#x434;&#x443; &#x43e;&#x43f;&#x43b;&#x430;&#x442;&#x438;</option>
+      </select>
+    </div>
+    <div><label>&#x421;&#x443;&#x43c;&#x430;, &#x433;&#x440;&#x43d;</label><input id="pg" type="number" min="0"/></div>
+    <div><label>&#x421;&#x443;&#x43c;&#x430;, $</label><input id="pu" type="number" min="0"/></div>
+    <div><label>&#x41c;&#x456;&#x439; %</label>
+      <select id="prate">
+        <option value="0.5">50% (Ads)</option>
+        <option value="0.2">20%</option>
+        <option value="0.1">10%</option>
+        <option value="0">&#x412;&#x440;&#x443;&#x447;&#x43d;&#x443;</option>
+      </select>
+    </div>
+    <div><label>&#x41a;&#x43e;&#x43c;&#x456;&#x441;&#x456;&#x44f;, &#x433;&#x440;&#x43d;</label><input id="pc" type="number" min="0"/></div>
+    <div class="sp"><label>&#x41a;&#x43e;&#x43c;&#x435;&#x43d;&#x442;&#x430;&#x440;</label><input id="pcom"/></div>
+  </div>
+  <div style="display:flex;gap:7px">
+    <button class="btn bp" id="savePayBtn">&#x417;&#x431;&#x435;&#x440;&#x435;&#x433;&#x442;&#x438;</button>
+    <button class="btn bg" id="cancelPayBtn">&#x421;&#x43a;&#x430;&#x441;&#x443;&#x432;&#x430;&#x442;&#x438;</button>
+  </div>
+</div>
+
+<!-- EXP FORM -->
+<div class="fc" id="expForm">
+  <h2 id="expFT" style="margin-bottom:10px"></h2>
+  <div class="fg">
+    <div class="sp2"><label>&#x41d;&#x430;&#x437;&#x432;&#x430;</label><input id="en"/></div>
+    <div><label>&#x414;&#x430;&#x442;&#x430;</label><input id="ed" type="date"/></div>
+    <div><label>&#x422;&#x438;&#x43f;</label><select id="et"></select></div>
+    <div><label>&#x425;&#x442;&#x43e; &#x43f;&#x43b;&#x430;&#x442;&#x438;&#x442;&#x44c;</label>
+      <select id="ew">
+        <option value="me">&#x42f; (&#x437; &#x43a;&#x43e;&#x43c;&#x456;&#x441;&#x456;&#x457;)</option>
+        <option value="company">&#x41a;&#x43e;&#x43c;&#x43f;&#x430;&#x43d;&#x456;&#x44f;</option>
+      </select>
+    </div>
+    <div><label>&#x421;&#x443;&#x43c;&#x430;, &#x433;&#x440;&#x43d;</label><input id="ea" type="number" min="0"/></div>
+    <div class="sp2"><label>&#x41a;&#x43e;&#x43c;&#x435;&#x43d;&#x442;&#x430;&#x440;</label><input id="ecom"/></div>
+  </div>
+  <div style="display:flex;gap:7px">
+    <button class="btn bp" id="saveExpBtn">&#x417;&#x431;&#x435;&#x440;&#x435;&#x433;&#x442;&#x438;</button>
+    <button class="btn bg" id="cancelExpBtn">&#x421;&#x43a;&#x430;&#x441;&#x443;&#x432;&#x430;&#x442;&#x438;</button>
+  </div>
+</div>
+
+<!-- DEAL FORM -->
+<div class="fc" id="dealForm">
+  <h2 id="dealFT" style="margin-bottom:10px"></h2>
+  <div class="fg">
+    <div class="sp"><label>&#x41a;&#x43b;&#x456;&#x454;&#x43d;&#x442;</label><input id="dn2"/></div>
+    <div><label>&#x41f;&#x43e;&#x441;&#x43b;&#x443;&#x433;&#x430;</label><select id="ds2"></select></div>
+    <div><label>&#x421;&#x443;&#x43c;&#x430; &#x41a;&#x41f;, &#x433;&#x440;&#x43d;</label><input id="dv" type="number" min="0"/></div>
+    <div><label>&#x415;&#x442;&#x430;&#x43f;</label><select id="dstg"></select></div>
+    <div><label>&#x414;&#x436;&#x435;&#x440;&#x435;&#x43b;&#x43e;</label><select id="dr2"></select></div>
+    <div><label>&#x41c;&#x435;&#x43d;&#x435;&#x434;&#x436;&#x435;&#x440;</label><input id="dmgr"/></div>
+  </div>
+  <div style="display:flex;gap:7px">
+    <button class="btn bp" id="saveDealBtn">&#x417;&#x431;&#x435;&#x440;&#x435;&#x433;&#x442;&#x438;</button>
+    <button class="btn bg" id="cancelDealBtn">&#x421;&#x43a;&#x430;&#x441;&#x443;&#x432;&#x430;&#x442;&#x438;</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="mainTabs">
+  <div class="tab on" data-pn="pay">&#x41e;&#x43f;&#x43b;&#x430;&#x442;&#x438;</div>
+  <div class="tab" data-pn="expenses">&#x412;&#x438;&#x442;&#x440;&#x430;&#x442;&#x438;</div>
+  <div class="tab" data-pn="monthly">&#x41f;&#x43e; &#x43c;&#x456;&#x441;&#x44f;&#x446;&#x44f;&#x445;</div>
+  <div class="tab" data-pn="funnel">&#x412;&#x43e;&#x440;&#x43e;&#x43d;&#x43a;&#x430;</div>
+  <div class="tab" data-pn="analytics">&#x410;&#x43d;&#x430;&#x43b;&#x456;&#x442;&#x438;&#x43a;&#x430;</div>
+  <div class="tab" data-pn="pipe">&#x423;&#x433;&#x43e;&#x434;&#x438;</div>
+  <div class="tab" data-pn="settings">&#x41d;&#x430;&#x43b;&#x430;&#x448;&#x442;&#x443;&#x432;&#x430;&#x43d;&#x43d;&#x44f;</div>
+</div>
+
+<!-- PAY PANEL -->
+<div class="pn on" id="pn-pay">
+  <div class="fl">
+    <label>&#x420;&#x456;&#x43a;:</label><select id="fy"><option value="all">&#x412;&#x441;&#x456;</option></select>
+    <label>&#x41c;&#x456;&#x441;:</label>
+    <select id="fm"><option value="all">&#x412;&#x441;&#x456;</option>
+      <option value="01">&#x421;&#x456;&#x447;</option><option value="02">&#x41b;&#x44e;&#x442;</option>
+      <option value="03">&#x411;&#x435;&#x440;</option><option value="04">&#x41a;&#x432;&#x456;</option>
+      <option value="05">&#x422;&#x440;&#x430;</option><option value="06">&#x427;&#x435;&#x440;</option>
+      <option value="07">&#x41b;&#x438;&#x43f;</option><option value="08">&#x421;&#x435;&#x440;</option>
+      <option value="09">&#x412;&#x435;&#x440;</option><option value="10">&#x416;&#x43e;&#x432;</option>
+      <option value="11">&#x41b;&#x438;&#x441;</option><option value="12">&#x413;&#x440;&#x443;</option>
+    </select>
+    <label>&#x41f;&#x43e;&#x441;&#x43b;&#x443;&#x433;&#x430;:</label><select id="fsvc"><option value="all">&#x412;&#x441;&#x456;</option></select>
+    <label>&#x414;&#x436;&#x435;&#x440;&#x435;&#x43b;&#x43e;:</label><select id="fsrc"><option value="all">&#x412;&#x441;&#x456;</option></select>
+  </div>
+  <div class="card wh">
+    <h2 style="margin-bottom:10px">&#x422;&#x430;&#x431;&#x43b;&#x438;&#x446;&#x44f; &#x43e;&#x43f;&#x43b;&#x430;&#x442;</h2>
+    <div style="overflow-x:auto"><table class="t" id="payTbl"></table></div>
+  </div>
+</div>
+
+<!-- EXP PANEL -->
+<div class="pn" id="pn-expenses">
+  <div class="g5" id="expKpi" style="margin-bottom:12px"></div>
+  <div class="card wh">
+    <h2 style="margin-bottom:10px">&#x412;&#x438;&#x442;&#x440;&#x430;&#x442;&#x438; &#x43d;&#x430; &#x43b;&#x456;&#x434;&#x456;&#x432; &#x442;&#x430; &#x43f;&#x456;&#x434;&#x43f;&#x438;&#x441;&#x43a;&#x438;</h2>
+    <div style="overflow-x:auto"><table class="t" id="expTbl"></table></div>
+  </div>
+</div>
+
+<!-- MONTHLY PANEL -->
+<div class="pn" id="pn-monthly">
+  <div class="tabs" id="yrTabs"></div>
+  <div class="stabs" id="moTabs"></div>
+  <div id="moContent"></div>
+</div>
+
+<!-- FUNNEL PANEL -->
+<div class="pn" id="pn-funnel">
+  <div class="g2">
+    <div><h2>&#x415;&#x442;&#x430;&#x43f;&#x438; &#x432;&#x43e;&#x440;&#x43e;&#x43d;&#x43a;&#x438;</h2><div id="fStages"></div></div>
+    <div><h2>&#x421;&#x438;&#x433;&#x43d;&#x430;&#x43b;&#x438;</h2><div id="fSigs"></div></div>
+  </div>
+</div>
+
+<!-- ANALYTICS PANEL -->
+<div class="pn" id="pn-analytics">
+  <div class="g3" style="margin-bottom:12px">
+    <div class="card wh"><h2>&#x412;&#x438;&#x440;&#x443;&#x447;&#x43a;&#x430; &#x437;&#x430; &#x43f;&#x43e;&#x441;&#x43b;&#x443;&#x433;&#x430;&#x43c;&#x438;</h2><div class="cb"><canvas id="cSvc"></canvas></div></div>
+    <div class="card wh"><h2>&#x412;&#x438;&#x440;&#x443;&#x447;&#x43a;&#x430; &#x437;&#x430; &#x434;&#x436;&#x435;&#x440;&#x435;&#x43b;&#x430;&#x43c;&#x438;</h2><div class="cb"><canvas id="cSrc"></canvas></div></div>
+    <div class="card wh"><h2>&#x421;&#x435;&#x440;&#x435;&#x434;&#x43d;&#x456;&#x439; &#x447;&#x435;&#x43a;</h2><div class="cb"><canvas id="cAvg"></canvas></div></div>
+  </div>
+  <div class="g6" id="aKpi"></div>
+</div>
+
+<!-- PIPE PANEL -->
+<div class="pn" id="pn-pipe">
+  <h2>&#x410;&#x43a;&#x442;&#x438;&#x432;&#x43d;&#x456; &#x443;&#x433;&#x43e;&#x434;&#x438;</h2>
+  <div id="pipeList" style="margin-top:8px"></div>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div class="pn" id="pn-settings">
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card wh">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h2 style="margin:0">&#x41c;&#x456;&#x441;&#x44f;&#x446;&#x456; &#x456; &#x43f;&#x43b;&#x430;&#x43d;&#x438;</h2>
+        <button class="btn bg" id="btnAddMonth">+ &#x41c;&#x456;&#x441;&#x44f;&#x446;&#x44c;</button>
+      </div>
+      <table class="t" id="monthsTbl"></table>
+    </div>
+    <div class="card wh">
+      <h2>&#x41d;&#x430;&#x43b;&#x430;&#x448;&#x442;&#x443;&#x432;&#x430;&#x43d;&#x43d;&#x44f;</h2>
+      <p style="font-size:13px;color:#5F5E5A;margin-bottom:12px;line-height:1.6">
+        &#x414;&#x430;&#x43d;&#x456; &#x437;&#x431;&#x435;&#x440;&#x456;&#x433;&#x430;&#x44e;&#x442;&#x44c;&#x441;&#x44f; &#x43d;&#x430; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x456; &#x432; SQLite. &#x41f;&#x43b;&#x430;&#x43d; &#x441;&#x430;&#x43c;&#x43e; &#x437;&#x43c;&#x456;&#x43d;&#x44e;&#x454;&#x442;&#x44c;&#x441;&#x44f; &#x432; &#x442;&#x430;&#x431;&#x43b;&#x438;&#x446;&#x456; &#x43c;&#x456;&#x441;&#x44f;&#x446;&#x456;&#x432;.
+      </p>
+      <button class="btn bd" id="btnReset">&#x421;&#x43a;&#x438;&#x43d;&#x443;&#x442;&#x438; &#x434;&#x43e; &#x43f;&#x43e;&#x447;&#x430;&#x442;&#x43a;&#x43e;&#x432;&#x438;&#x445; &#x434;&#x430;&#x43d;&#x438;&#x445;</button>
+      <p style="font-size:11px;color:#898781;margin-top:8px">&#x2757; &#x42f;&#x43a;&#x449;&#x43e; &#x43d;&#x430;&#x442;&#x438;&#x441;&#x43d;&#x435;&#x448;, &#x432;&#x441;&#x456; &#x437;&#x43c;&#x456;&#x43d;&#x438; &#x431;&#x443;&#x434;&#x443;&#x442;&#x44c; &#x432;&#x442;&#x440;&#x430;&#x447;&#x435;&#x43d;&#x456;</p>
+    </div>
+  </div>
+  <div class="fc" id="addMonthForm" style="max-width:480px;display:none">
+    <h2 style="margin-bottom:10px">&#x41d;&#x43e;&#x432;&#x438;&#x439; &#x43c;&#x456;&#x441;&#x44f;&#x446;&#x44c;</h2>
+    <div class="fg" style="grid-template-columns:1fr 1fr">
+      <div><label>&#x420;&#x456;&#x43a;</label><input id="my" type="number" placeholder="2026"/></div>
+      <div><label>&#x41c;&#x456;&#x441;&#x44f;&#x446;&#x44c; (01-12)</label><input id="mm" type="text" maxlength="2" placeholder="07"/></div>
+      <div><label>&#x41d;&#x430;&#x437;&#x432;&#x430;</label><input id="ml" placeholder="&#x41b;&#x438;&#x43f; '26"/></div>
+      <div><label>&#x41f;&#x43b;&#x430;&#x43d;, &#x433;&#x440;&#x43d;</label><input id="mp" type="number" placeholder="150000"/></div>
+    </div>
+    <div style="display:flex;gap:7px">
+      <button class="btn bp" id="saveMonthBtn">&#x414;&#x43e;&#x434;&#x430;&#x442;&#x438;</button>
+      <button class="btn bg" id="cancelMonthBtn">&#x421;&#x43a;&#x430;&#x441;&#x443;&#x432;&#x430;&#x442;&#x438;</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /appShell -->
+</div><!-- /w -->
+
+<script>
+var SVC={meta:"Meta Ads",google:"Google Ads",meta_google:"Meta+Google",tg:"Telegram Ads",seo:"SEO",smm:"SMM",web:"Сайт/Web",complex:"Комплекс"};
+var SRC={baza:"База",fb_viktor:"ФБ Виктор",networking:"Нетворкінг",biz_club:"Бізнес клуб",ilia:"Ілія (SEOK)",organic:"Органіка",referral:"Реферал"};
+var SVC_COL={meta:"#E24B4A",google:"#2E6DA3",meta_google:"#7F77DD",tg:"#185FA5",seo:"#1D9E75",smm:"#1baf7a",web:"#854F0B",complex:"#533AB7"};
+var EXP_TYPE={lead_fb:"Ліди ФБ Виктор",lead_other:"Ліди (інше)",club:"Бізнес клуб",chat:"Чат/спільнота",subscription:"Підписка",other:"Інше"};
+var STAGES=[
+  {id:"new",lb:"Новий лід",p:.05},{id:"nbt3",lb:"НБТ 3x3",p:.10},
+  {id:"nbt4",lb:"НБТ 4 по 1",p:.18},{id:"prep",lb:"Підготовка матеріалів",p:.25},
+  {id:"zoom1p",lb:"Зум 1 план",p:.30},{id:"zoom1f",lb:"Зум 1 факт",p:.40},
+  {id:"zoom2p",lb:"Зум 2 план",p:.50},{id:"zoom2f",lb:"Зум 2 факт",p:.60},
+  {id:"kp",lb:"КП відправлено",p:.45},{id:"perenos",lb:"Перенос",p:.20},
+  {id:"voice",lb:"Зміна голосу",p:.20},{id:"invoice",lb:"Рахунок / Жду оплати",p:.88},
+  {id:"won",lb:"Закрито (won)",p:1},{id:"lost",lb:"Відмова",p:0}
+];
+var SM={};for(var i=0;i<STAGES.length;i++) SM[STAGES[i].id]=STAGES[i];
+
+var pays=[],months=[],expenses=[],pipe=[];
+var editPayId=null,editExpId=null,editDealId=null;
+var charts={},curYr="all",curMoKey="all_all";
+
+function fn(n){return Math.round(n).toLocaleString("uk-UA");}
+function fgrn(n){return fn(n)+" грн";}
+function ds(ts){return Math.floor((Date.now()-ts)/86400000);}
+function pctCol(p){return p>=100?"#0F6E56":p>=70?"#2E6DA3":p>=40?"#854F0B":"#A32D2D";}
+function sortedMonths(){return months.slice().sort(function(a,b){return a.key<b.key?-1:1;});}
+function currentMonth(){var s=sortedMonths();return s[s.length-1]||{plan:150000,year:"",month:"",label:"",partial:false};}
+function prevMonth(){var s=sortedMonths();return s.length>1?s[s.length-2]:null;}
+function openD(){return pipe.filter(function(d){return d.stage!=="won"&&d.stage!=="lost";});}
+function myExp(yr,mo){return expenses.filter(function(e){return e.who==="me"&&(!yr||e.year===yr)&&(!mo||e.month===mo);}).reduce(function(s,e){return s+e.amt;},0);}
+function compExp(){return expenses.filter(function(e){return e.who==="company";}).reduce(function(s,e){return s+e.amt;},0);}
+function card(lb,v,cls,sub){return '<div class="card"><div class="lb">'+lb+'</div><div class="vl '+(cls||"")+'">'+v+'</div>'+(sub?'<div style="font-size:11px;color:#5F5E5A;margin-top:2px">'+sub+'</div>':'')+'</div>';}
+
+// ─── API ───────────────────────────────────────────────────────────────────
+async function api(method,url,data){
+  var opts={method:method,headers:{"Content-Type":"application/json"}};
+  if(data) opts.body=JSON.stringify(data);
+  var r=await fetch(url,opts);
+  if(!r.ok) throw new Error("API error "+r.status);
+  return r.json();
+}
+
+async function loadAll(){
+  var results=await Promise.all([
+    api("GET","/api/pays"),
+    api("GET","/api/months"),
+    api("GET","/api/expenses"),
+    api("GET","/api/pipeline"),
+  ]);
+  pays=results[0];months=results[1];expenses=results[2];pipe=results[3];
+  document.getElementById("loadMsg").style.display="none";
+  document.getElementById("appShell").style.display="block";
+  initSelects();renderAll();
+}
+
+// ─── INIT SELECTS ────────────────────────────────────────────────────────────
+function initSelects(){
+  var so="",ro="",sto="",eto="";
+  for(var k in SVC) so+='<option value="'+k+'">'+SVC[k]+'</option>';
+  for(var k in SRC) ro+='<option value="'+k+'">'+SRC[k]+'</option>';
+  for(var i=0;i<STAGES.length;i++) sto+='<option value="'+STAGES[i].id+'">'+STAGES[i].lb+'</option>';
+  for(var k in EXP_TYPE) eto+='<option value="'+k+'">'+EXP_TYPE[k]+'</option>';
+  ["ps","ds2"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=so;});
+  ["pr","dr2"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=ro;});
+  document.getElementById("fsvc").innerHTML='<option value="all">Всі</option>'+so;
+  document.getElementById("fsrc").innerHTML='<option value="all">Всі</option>'+ro;
+  document.getElementById("dstg").innerHTML=sto;
+  document.getElementById("et").innerHTML=eto;
+  updateYearFilter();
+}
+function updateYearFilter(){
+  var years={};months.forEach(function(m){years[m.year]=1;});
+  var opts='<option value="all">Всі</option>';
+  Object.keys(years).sort().forEach(function(y){opts+='<option value="'+y+'">'+y+'</option>';});
+  document.getElementById("fy").innerHTML=opts;
+}
+
+// ─── KPI ─────────────────────────────────────────────────────────────────────
+function renderKpis(){
+  var cm=currentMonth(),pm=prevMonth();
+  var cmp=pays.filter(function(p){return p.year===cm.year&&p.month===cm.month;});
+  var cf=cmp.reduce(function(s,p){return s+p.grn;},0);
+  var cc=cmp.reduce(function(s,p){return s+p.comm;},0);
+  var cec=myExp(cm.year,cm.month),cnet=cc-cec;
+  var cpct=Math.min(100,Math.round(cf/(cm.plan||1)*100));
+  var ac=pays.reduce(function(s,p){return s+p.comm;},0);
+  var aec=myExp(),anet=ac-aec;
+  var fw=openD().reduce(function(s,d){return s+(SM[d.stage]?d.value*SM[d.stage].p:0);},0);
+  var col=cpct>=100?"gr":cpct>=60?"bl":"am";
+  document.getElementById("kpis").innerHTML=
+    card((cm.label||"Поточний")+" факт",fgrn(cf),"gr")+
+    card("Комісія"+(cm.label?" "+cm.label:""),fgrn(cc),"bl")+
+    card("Витрати (ліди)",fgrn(cec),"am",cm.label)+
+    card("Чистий заробіток",fgrn(cnet),"gr",cm.label)+
+    card("% плану",cpct+"%",col,cm.label)+
+    card("Прогноз воронки",fgrn(fw),"bl");
+  document.getElementById("netBox").innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:13px">'+
+    '<div><div class="lb">Загальна комісія</div><div class="vl" style="font-size:17px">'+fgrn(ac)+'</div></div>'+
+    '<div><div class="lb">Мої витрати на ліди</div><div class="vl" style="font-size:17px;color:#FAC775">- '+fgrn(aec)+'</div></div>'+
+    '<div><div class="lb">Чистий заробіток</div><div class="vl" style="font-size:21px">'+fgrn(anet)+'</div></div>'+
+    '<div><div class="lb">Покрито компанією</div><div class="vl" style="font-size:17px;color:#9FE1CB">'+fgrn(compExp())+'</div></div>'+
+    '</div>';
+}
+
+// ─── PLAN ─────────────────────────────────────────────────────────────────────
+function renderPlan(){
+  var cm=currentMonth(),pm=prevMonth();
+  var cf=pays.filter(function(p){return p.year===cm.year&&p.month===cm.month;}).reduce(function(s,p){return s+p.grn;},0);
+  var cc=pays.filter(function(p){return p.year===cm.year&&p.month===cm.month;}).reduce(function(s,p){return s+p.comm;},0);
+  var cec=myExp(cm.year,cm.month);
+  var pf=pm?pays.filter(function(p){return p.year===pm.year&&p.month===pm.month;}).reduce(function(s,p){return s+p.grn;},0):0;
+  var pct=Math.min(100,Math.round(cf/(cm.plan||1)*100));
+  var ppct=pm?Math.round(pf/(pm.plan||1)*100):0;
+  var delta=pct-ppct,fill=pct>=100?"#0F6E56":pct>=60?"#2E6DA3":"#E24B4A";
+  var fw=openD().reduce(function(s,d){return s+(SM[d.stage]?d.value*SM[d.stage].p:0);},0);
+  document.getElementById("planCard").innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">'+
+    '<h2 style="margin:0">'+(cm.label||"Поточний")+(cm.partial?" (місяць іде)":"")+'</h2>'+
+    (pm?'<span style="font-size:12px;color:#5F5E5A">'+pm.label+': '+ppct+'% | <span style="color:'+(delta>=0?"#0F6E56":"#A32D2D")+';font-weight:700">'+(delta>=0?"+":"")+delta+'пп</span></span>':'')+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-bottom:10px">'+
+    '<div><div class="lb">Факт виручки</div><div style="font-size:15px;font-weight:700;color:#0F6E56">'+fgrn(cf)+'</div></div>'+
+    '<div><div class="lb">Комісія</div><div style="font-size:15px;font-weight:700;color:#2E6DA3">'+fgrn(cc)+'</div></div>'+
+    '<div><div class="lb">Витрати (ліди)</div><div style="font-size:15px;font-weight:700;color:#854F0B">- '+fgrn(cec)+'</div></div>'+
+    '<div><div class="lb">Чистий заробіток</div><div style="font-size:15px;font-weight:700;color:#0F6E56">'+fgrn(cc-cec)+'</div></div>'+
+    '<div><div class="lb">Залишилось</div><div style="font-size:15px;font-weight:700;color:#5F5E5A">'+fgrn(Math.max(0,(cm.plan||0)-cf))+'</div></div>'+
+    '</div>'+
+    '<div class="pr"><div class="pf" style="width:'+pct+'%;background:'+fill+'"></div></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:12px;color:#5F5E5A;margin-top:2px"><span>'+fgrn(cf)+' з '+fgrn(cm.plan||0)+'</span><span>'+pct+'%</span></div>';
+}
+
+// ─── PAY TABLE ────────────────────────────────────────────────────────────────
+function filtPays(){
+  var fy=document.getElementById("fy").value,fm=document.getElementById("fm").value;
+  var fs=document.getElementById("fsvc").value,fr=document.getElementById("fsrc").value;
+  return pays.filter(function(p){
+    return (fy==="all"||p.year===fy)&&(fm==="all"||p.month===fm)&&(fs==="all"||p.svc===fs)&&(fr==="all"||p.src===fr);
+  }).sort(function(a,b){return a.date<b.date?1:-1;});
+}
+function renderPayTable(){
+  var list=filtPays();
+  var tr2=list.reduce(function(s,p){return s+p.grn;},0);
+  var tu=list.reduce(function(s,p){return s+p.usd;},0);
+  var tc=list.reduce(function(s,p){return s+p.comm;},0);
+  var h='<tr><th>Дата</th><th>Клієнт</th><th>Послуга</th><th>Джерело</th><th>Сума, грн</th><th>Сума, $</th><th>%</th><th>Комісія</th><th>Статус</th><th>Коментар</th><th></th></tr>';
+  for(var i=0;i<list.length;i++){
+    var p=list[i],sc=SVC_COL[p.svc]||"#5F5E5A";
+    var sb=p.status==="paid"?'<span class="pi b1">Оплачено</span>':p.status==="part"?'<span class="pi b3">50%</span>':'<span class="pi b2">Жду</span>';
+    h+='<tr>'+
+      '<td style="color:#5F5E5A;white-space:nowrap;font-size:12px">'+p.date+'</td>'+
+      '<td><strong>'+p.name+'</strong></td>'+
+      '<td><span style="background:'+sc+'22;color:'+sc+';font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600;white-space:nowrap">'+(SVC[p.svc]||p.svc)+'</span></td>'+
+      '<td style="color:#5F5E5A;font-size:12px">'+(SRC[p.src]||p.src)+'</td>'+
+      '<td><strong>'+fn(p.grn)+' грн</strong></td>'+
+      '<td style="color:#5F5E5A">'+(p.usd?'$'+fn(p.usd):'—')+'</td>'+
+      '<td><span class="pi b3">'+Math.round(p.rate*100)+'%</span></td>'+
+      '<td style="color:#0F6E56;font-weight:700">'+fn(p.comm)+' грн</td>'+
+      '<td>'+sb+'</td>'+
+      '<td style="color:#5F5E5A;font-size:12px;max-width:140px">'+p.comment+'</td>'+
+      '<td style="white-space:nowrap"><button class="btn bg bsm" data-ep="'+p.id+'">Ред.</button> <button class="btn bd bsm" data-dp="'+p.id+'">&#10005;</button></td>'+
+      '</tr>';
+  }
+  h+='<tfoot><tr><td colspan="4"><strong>Разом ('+list.length+')</strong></td><td><strong>'+fn(tr2)+' грн</strong></td><td style="color:#5F5E5A">'+(tu?'$'+fn(tu):'')+'</td><td></td><td style="color:#0F6E56;font-weight:700">'+fn(tc)+' грн</td><td colspan="3"></td></tr></tfoot>';
+  var tbl=document.getElementById("payTbl");
+  tbl.innerHTML=h;
+  tbl.addEventListener("click",function(ev){
+    var ep=ev.target.getAttribute("data-ep"),dp=ev.target.getAttribute("data-dp");
+    if(ep) openPayForm(ep);
+    if(dp&&confirm("Видалити оплату?")) deletePay(dp);
+  });
+}
+
+// ─── PAY FORM ────────────────────────────────────────────────────────────────
+function openPayForm(editId){
+  editPayId=editId||null;
+  var p=editId?pays.find(function(x){return x.id===editId;}):null;
+  document.getElementById("payFT").textContent=p?"Редагувати оплату":"Нова оплата";
+  document.getElementById("pn").value=p?p.name:"";
+  document.getElementById("pd").value=p?p.date:new Date().toISOString().substr(0,10);
+  document.getElementById("pg").value=p?p.grn:"";
+  document.getElementById("pu").value=p?p.usd:"";
+  document.getElementById("pc").value=p?p.comm:"";
+  document.getElementById("pcom").value=p?p.comment:"";
+  document.getElementById("pst").value=p?p.status:"paid";
+  document.getElementById("ps").value=p?p.svc:"meta";
+  document.getElementById("pr").value=p?p.src:"baza";
+  document.getElementById("prate").value=p?String(p.rate):"0.5";
+  document.getElementById("payForm").style.display="block";
+  document.getElementById("payForm").scrollIntoView({behavior:"smooth"});
+}
+function closePayForm(){document.getElementById("payForm").style.display="none";editPayId=null;}
+
+async function savePayment(){
+  var name=document.getElementById("pn").value.trim(),grn=parseFloat(document.getElementById("pg").value)||0;
+  if(!name||!grn){alert("Вкажи назву і суму");return;}
+  var rate=parseFloat(document.getElementById("prate").value)||0;
+  var commV=parseFloat(document.getElementById("pc").value);
+  var data={
+    id:editPayId||undefined,
+    date:document.getElementById("pd").value,
+    name:name,svc:document.getElementById("ps").value,src:document.getElementById("pr").value,
+    grn:grn,usd:parseFloat(document.getElementById("pu").value)||0,rate:rate,
+    comm:isNaN(commV)?Math.round(grn*rate):commV,
+    status:document.getElementById("pst").value,comment:document.getElementById("pcom").value.trim()
+  };
+  var result;
+  if(editPayId){
+    result=await api("PUT","/api/pays/"+editPayId,data);
+    pays=pays.map(function(p){return p.id===editPayId?result:p;});
+  } else {
+    result=await api("POST","/api/pays",data);
+    pays.push(result);
+  }
+  closePayForm();renderAll();
+}
+
+async function deletePay(id){
+  await api("DELETE","/api/pays/"+id);
+  pays=pays.filter(function(p){return p.id!==id;});
+  renderAll();
+}
+
+document.getElementById("pg").addEventListener("input",function(){
+  var g=parseFloat(this.value)||0,r=parseFloat(document.getElementById("prate").value)||0;
+  if(r>0) document.getElementById("pc").value=Math.round(g*r);
+});
+document.getElementById("prate").addEventListener("change",function(){
+  var g=parseFloat(document.getElementById("pg").value)||0,r=parseFloat(this.value)||0;
+  if(r>0&&g>0) document.getElementById("pc").value=Math.round(g*r);
+});
+
+// ─── EXPENSES ─────────────────────────────────────────────────────────────────
+function renderExpenses(){
+  var list=expenses.slice().sort(function(a,b){return a.date<b.date?1:-1;});
+  var myT=list.filter(function(e){return e.who==="me";}).reduce(function(s,e){return s+e.amt;},0);
+  var coT=list.filter(function(e){return e.who==="company";}).reduce(function(s,e){return s+e.amt;},0);
+  var totC=pays.reduce(function(s,p){return s+p.comm;},0);
+  document.getElementById("expKpi").innerHTML=
+    card("Загальна комісія",fgrn(totC),"bl")+
+    card("Мої витрати (ліди)",fgrn(myT),"am","з комісії")+
+    card("Чистий заробіток",fgrn(totC-myT),"gr","комісія - ліди")+
+    card("Покрито компанією",fgrn(coT))+
+    card("Записів витрат",String(list.length));
+  if(!list.length){
+    document.getElementById("expTbl").innerHTML='<tbody><tr><td colspan="7" style="text-align:center;color:#5F5E5A;padding:20px">Немає витрат</td></tr></tbody>';
+    return;
+  }
+  var h='<tr><th>Дата</th><th>Назва</th><th>Тип</th><th>Хто</th><th>Сума</th><th>Коментар</th><th></th></tr>';
+  for(var i=0;i<list.length;i++){
+    var e=list[i];
+    h+='<tr>'+
+      '<td style="color:#5F5E5A;font-size:12px;white-space:nowrap">'+e.date+'</td>'+
+      '<td><strong>'+e.name+'</strong></td>'+
+      '<td style="color:#5F5E5A;font-size:12px">'+(EXP_TYPE[e.type]||e.type)+'</td>'+
+      '<td>'+(e.who==="me"?'<span class="pi b2">Я</span>':'<span class="pi b5">Компанія</span>')+'</td>'+
+      '<td style="font-weight:700;color:'+(e.who==="me"?"#A32D2D":"#5F5E5A")+'">'+fn(e.amt)+' грн</td>'+
+      '<td style="color:#5F5E5A;font-size:12px">'+e.comment+'</td>'+
+      '<td style="white-space:nowrap"><button class="btn bg bsm" data-ee="'+e.id+'">Ред.</button> <button class="btn bd bsm" data-de="'+e.id+'">&#10005;</button></td>'+
+      '</tr>';
+  }
+  h+='<tfoot><tr><td colspan="4">Мої витрати</td><td style="color:#A32D2D;font-weight:700">'+fn(myT)+' грн</td><td colspan="2"></td></tr>'+
+     '<tr><td colspan="4">Компанія</td><td style="color:#5F5E5A;font-weight:700">'+fn(coT)+' грн</td><td colspan="2"></td></tr></tfoot>';
+  var tbl=document.getElementById("expTbl");
+  tbl.innerHTML=h;
+  tbl.addEventListener("click",function(ev){
+    var ee=ev.target.getAttribute("data-ee"),de=ev.target.getAttribute("data-de");
+    if(ee) openExpForm(ee);
+    if(de&&confirm("Видалити?")) deleteExp(de);
+  });
+}
+function openExpForm(editId){
+  editExpId=editId||null;
+  var e=editId?expenses.find(function(x){return x.id===editId;}):null;
+  document.getElementById("expFT").textContent=e?"Редагувати витрату":"Нова витрата";
+  document.getElementById("en").value=e?e.name:"";
+  document.getElementById("ed").value=e?e.date:new Date().toISOString().substr(0,10);
+  document.getElementById("ea").value=e?e.amt:"";
+  document.getElementById("ecom").value=e?e.comment:"";
+  document.getElementById("et").value=e?e.type:"lead_fb";
+  document.getElementById("ew").value=e?e.who:"me";
+  document.getElementById("expForm").style.display="block";
+  document.getElementById("expForm").scrollIntoView({behavior:"smooth"});
+}
+function closeExpForm(){document.getElementById("expForm").style.display="none";editExpId=null;}
+async function saveExp(){
+  var name=document.getElementById("en").value.trim(),amt=parseFloat(document.getElementById("ea").value)||0;
+  if(!name||!amt){alert("Вкажи назву і суму");return;}
+  var data={id:editExpId||undefined,date:document.getElementById("ed").value,
+    name:name,type:document.getElementById("et").value,who:document.getElementById("ew").value,
+    amt:amt,comment:document.getElementById("ecom").value.trim()};
+  var result;
+  if(editExpId){
+    result=await api("PUT","/api/expenses/"+editExpId,data);
+    expenses=expenses.map(function(e){return e.id===editExpId?result:e;});
+  } else {
+    result=await api("POST","/api/expenses",data);
+    expenses.push(result);
+  }
+  closeExpForm();renderAll();
+}
+async function deleteExp(id){
+  await api("DELETE","/api/expenses/"+id);
+  expenses=expenses.filter(function(e){return e.id!==id;});
+  renderAll();
+}
+
+// ─── MONTHLY ─────────────────────────────────────────────────────────────────
+function buildYrTabs(){
+  var years={};months.forEach(function(m){years[m.year]=1;});
+  var h='<div class="tab on" data-yr="all">Всі</div>';
+  Object.keys(years).sort().forEach(function(y){h+='<div class="tab" data-yr="'+y+'">'+y+'</div>';});
+  var el=document.getElementById("yrTabs");el.innerHTML=h;
+  el.addEventListener("click",function(ev){
+    var yr=ev.target.getAttribute("data-yr");if(!yr)return;
+    curYr=yr;curMoKey="all_"+yr;
+    el.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-yr")===yr);});
+    buildMoTabs();renderMoContent();
+  });
+}
+function buildMoTabs(){
+  var list=sortedMonths().filter(function(m){return curYr==="all"||m.year===curYr;});
+  var h='<div class="stab on" data-mk="all_'+curYr+'">Всі місяці</div>';
+  for(var i=0;i<list.length;i++) h+='<div class="stab" data-mk="'+list[i].key+'">'+list[i].label+'</div>';
+  var el=document.getElementById("moTabs");el.innerHTML=h;
+  el.addEventListener("click",function(ev){
+    var mk=ev.target.getAttribute("data-mk");if(!mk)return;
+    curMoKey=mk;
+    el.querySelectorAll(".stab").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-mk")===mk);});
+    renderMoContent();
+  });
+}
+function renderMoContent(){
+  var list=sortedMonths().filter(function(m){return curYr==="all"||m.year===curYr;});
+  if(curMoKey.indexOf("all_")===0) renderMoAll(list);
+  else{var m=months.find(function(x){return x.key===curMoKey;});if(m)renderMoOne(m);}
+}
+function renderMoAll(list){
+  var labels=list.map(function(m){return m.label;});
+  var facts=list.map(function(m){return pays.filter(function(p){return p.year===m.year&&p.month===m.month;}).reduce(function(s,p){return s+p.grn;},0);});
+  var comms=list.map(function(m){return pays.filter(function(p){return p.year===m.year&&p.month===m.month;}).reduce(function(s,p){return s+p.comm;},0);});
+  var costs=list.map(function(m){return myExp(m.year,m.month);});
+  var nets=comms.map(function(c,i){return c-costs[i];});
+  var plans=list.map(function(m){return m.plan;});
+  var tf=facts.reduce(function(a,b){return a+b;},0);
+  var tc=comms.reduce(function(a,b){return a+b;},0);
+  var tec=costs.reduce(function(a,b){return a+b;},0);
+  var bgF=facts.map(function(f,i){return f>=plans[i]?"#0F6E56BB":"#2E6DA3BB";});
+  var bdF=facts.map(function(f,i){return f>=plans[i]?"#0F6E56":"#2E6DA3";});
+  document.getElementById("moContent").innerHTML=
+    '<div class="card wh" style="margin-bottom:12px">'+
+    '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:9px">'+
+    '<h2 style="margin:0">Виручка по місяцях, грн</h2>'+
+    '<span style="font-size:12px;color:#5F5E5A">Виручка: <strong>'+fn(tf)+'</strong> | Комісія: <strong style="color:#0F6E56">'+fn(tc)+'</strong> | Чистий: <strong style="color:#2E6DA3">'+fn(tc-tec)+'</strong></span>'+
+    '</div><div class="cbt"><canvas id="cMo"></canvas></div></div>'+
+    '<div class="card wh"><h2>Деталізація</h2><div style="overflow-x:auto"><table class="t" id="moTbl"></table></div></div>';
+  var ctx=document.getElementById("cMo");
+  if(charts.mo)charts.mo.destroy();
+  charts.mo=new Chart(ctx,{type:"bar",data:{labels:labels,datasets:[
+    {label:"План",data:plans,backgroundColor:"#E0DED699",borderColor:"#C9C7BC",borderWidth:1,borderRadius:3,order:3},
+    {label:"Факт",data:facts,backgroundColor:bgF,borderColor:bdF,borderWidth:1,borderRadius:3,order:1},
+    {label:"Чистий",data:nets,backgroundColor:"#1D9E7566",borderColor:"#1D9E75",borderWidth:1,borderRadius:3,order:2}
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+": "+fn(c.parsed.y)+" грн";}}}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11},color:"#5F5E5A",maxRotation:35}},
+            y:{grid:{color:"#E4E2D8"},ticks:{font:{size:11},color:"#5F5E5A",callback:function(v){return fn(v);}}}}}});
+  var h='<tr><th>Місяць</th><th>Угод</th><th>Виручка</th><th>Комісія</th><th>Витрати</th><th>Чистий</th><th>План</th><th>%</th></tr>';
+  list.slice().reverse().forEach(function(m){
+    var mp=pays.filter(function(p){return p.year===m.year&&p.month===m.month;});
+    var f=mp.reduce(function(s,p){return s+p.grn;},0);
+    var c=mp.reduce(function(s,p){return s+p.comm;},0);
+    var ec=myExp(m.year,m.month),net=c-ec;
+    var pct=Math.round(f/(m.plan||1)*100),col=pctCol(pct);
+    h+='<tr>'+
+      '<td><strong>'+m.label+'</strong>'+(m.partial?' <span class="pi b2" style="font-size:10px">іде</span>':'')+'</td>'+
+      '<td style="color:#5F5E5A">'+mp.length+'</td>'+
+      '<td><strong>'+fn(f)+' грн</strong></td>'+
+      '<td style="color:#0F6E56;font-weight:600">'+fn(c)+' грн</td>'+
+      '<td style="color:#A32D2D">'+(ec?'- '+fn(ec)+' грн':'—')+'</td>'+
+      '<td style="color:#2E6DA3;font-weight:700">'+fn(net)+' грн</td>'+
+      '<td style="color:#5F5E5A">'+fn(m.plan)+' грн</td>'+
+      '<td><span class="pi" style="background:'+col+'22;color:'+col+'">'+pct+'%</span></td>'+
+      '</tr>';
+  });
+  document.getElementById("moTbl").innerHTML=h;
+}
+function renderMoOne(m){
+  var mp=pays.filter(function(p){return p.year===m.year&&p.month===m.month;}).sort(function(a,b){return b.grn-a.grn;});
+  var f=mp.reduce(function(s,p){return s+p.grn;},0);
+  var c=mp.reduce(function(s,p){return s+p.comm;},0);
+  var ec=myExp(m.year,m.month),net=c-ec;
+  var pct=Math.round(f/(m.plan||1)*100),col=pctCol(pct),fill=pct>=100?"#0F6E56":pct>=60?"#2E6DA3":"#E24B4A";
+  var mExp=expenses.filter(function(e){return e.year===m.year&&e.month===m.month;});
+  var rows="",expRows="";
+  for(var i=0;i<mp.length;i++){
+    var p=mp[i],sc=SVC_COL[p.svc]||"#5F5E5A";
+    var sb=p.status==="paid"?'<span class="pi b1">Оплачено</span>':p.status==="part"?'<span class="pi b3">50%</span>':'<span class="pi b2">Жду</span>';
+    rows+='<tr><td><strong>'+p.name+'</strong></td>'+
+      '<td><span style="background:'+sc+'22;color:'+sc+';font-size:11px;padding:2px 6px;border-radius:4px;font-weight:600">'+(SVC[p.svc]||p.svc)+'</span></td>'+
+      '<td style="color:#5F5E5A;font-size:12px">'+(SRC[p.src]||p.src)+'</td>'+
+      '<td><strong>'+fn(p.grn)+'</strong></td>'+
+      '<td style="color:#5F5E5A">'+(p.usd?'$'+fn(p.usd):'—')+'</td>'+
+      '<td><span class="pi b3">'+Math.round(p.rate*100)+'%</span></td>'+
+      '<td style="color:#0F6E56;font-weight:700">'+fn(p.comm)+' грн</td>'+
+      '<td>'+sb+'</td>'+
+      '<td><button class="btn bg bsm" data-ep="'+p.id+'">Ред.</button></td></tr>';
+  }
+  for(var i=0;i<mExp.length;i++){
+    var e=mExp[i];
+    expRows+='<tr><td>'+e.name+'</td><td style="color:#5F5E5A;font-size:12px">'+(EXP_TYPE[e.type]||e.type)+'</td>'+
+      '<td>'+(e.who==="me"?'<span class="pi b2">Я</span>':'<span class="pi b5">Компанія</span>')+'</td>'+
+      '<td style="font-weight:700;color:'+(e.who==="me"?"#A32D2D":"#5F5E5A")+'">'+fn(e.amt)+' грн</td>'+
+      '<td style="color:#5F5E5A;font-size:12px">'+e.comment+'</td></tr>';
+  }
+  var el=document.getElementById("moContent");
+  el.innerHTML=
+    '<div class="g2" style="margin-bottom:12px">'+
+    '<div class="card wh"><div class="lb">Факт оплат</div><div style="font-size:22px;font-weight:700;color:'+col+'">'+fgrn(f)+'</div>'+
+    '<div class="pr"><div class="pf" style="width:'+pct+'%;background:'+fill+'"></div></div>'+
+    '<div style="font-size:12px;color:#5F5E5A;margin-top:2px">'+pct+'% від плану '+fgrn(m.plan)+'</div></div>'+
+    '<div class="card wh"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+    '<div><div class="lb">Комісія</div><div style="font-size:16px;font-weight:700;color:#0F6E56">'+fgrn(c)+'</div></div>'+
+    '<div><div class="lb">Витрати (ліди)</div><div style="font-size:16px;font-weight:700;color:#A32D2D">- '+fgrn(ec)+'</div></div>'+
+    '<div><div class="lb">Чистий заробіток</div><div style="font-size:16px;font-weight:700;color:#2E6DA3">'+fgrn(net)+'</div></div>'+
+    '<div><div class="lb">Угод / сер. чек</div><div style="font-size:16px;font-weight:700">'+mp.length+(mp.length?' / '+fn(Math.round(f/mp.length)):'')+'</div></div>'+
+    '</div></div></div>'+
+    '<div class="card wh" style="margin-bottom:12px"><h2>Оплати'+(m.partial?" (місяць іде)":"")+'</h2>'+
+    '<div style="overflow-x:auto"><table class="t">'+
+    '<tr><th>Клієнт</th><th>Послуга</th><th>Джерело</th><th>Сума</th><th>USD</th><th>%</th><th>Комісія</th><th>Статус</th><th></th></tr>'+
+    rows+'<tfoot><tr><td colspan="3">Разом</td><td><strong>'+fn(f)+'</strong></td><td></td><td></td><td style="color:#0F6E56;font-weight:700">'+fn(c)+' грн</td><td colspan="2"></td></tr></tfoot></table></div></div>'+
+    (mExp.length?'<div class="card wh"><h2>Витрати місяця</h2><div style="overflow-x:auto"><table class="t"><tr><th>Назва</th><th>Тип</th><th>Хто</th><th>Сума</th><th>Коментар</th></tr>'+expRows+'</table></div></div>':'');
+  el.addEventListener("click",function(ev){
+    var ep=ev.target.getAttribute("data-ep");
+    if(ep) openPayForm(ep);
+  });
+}
+
+// ─── FUNNEL ──────────────────────────────────────────────────────────────────
+function renderFunnel(){
+  var od=openD(),maxC=1;
+  for(var i=0;i<STAGES.length;i++){var cnt=pipe.filter(function(d){return d.stage===STAGES[i].id;}).length;if(cnt>maxC)maxC=cnt;}
+  var sh="";
+  for(var i=0;i<STAGES.length;i++){
+    var s=STAGES[i],inS=pipe.filter(function(d){return d.stage===s.id;});
+    var cnt=inS.length,sum=inS.reduce(function(a,d){return a+(d.value||0);},0);
+    var w=s.id==="won"?100:Math.round(cnt/maxC*100);
+    var c=s.id==="won"?"#0F6E56":s.id==="invoice"?"#1D9E75":s.id==="lost"?"#E24B4A":"#2E6DA3";
+    sh+='<div class="br"><div class="bm"><span>'+s.lb+'</span><span style="font-weight:'+(cnt?600:400)+'">'+cnt+' · '+fgrn(sum)+'</span></div><div class="bt"><div class="bf" style="width:'+Math.max(w,cnt?4:0)+'%;background:'+c+'"></div></div></div>';
+  }
+  document.getElementById("fStages").innerHTML=sh;
+  var stuck={},worst=null,wn=0;
+  for(var i=0;i<od.length;i++) stuck[od[i].stage]=(stuck[od[i].stage]||0)+1;
+  for(var k in stuck){if(stuck[k]>wn){wn=stuck[k];worst=k;}}
+  var stale=od.filter(function(d){return ds(d.updated_at)>=10;});
+  var inv=od.filter(function(d){return d.stage==="invoice";});
+  var kp=od.filter(function(d){return d.stage==="kp";});
+  var h="";
+  if(!od.length){document.getElementById("fSigs").innerHTML='<div class="al ai">Воронка порожня</div>';return;}
+  if(inv.length) h+='<div class="al ag">Рахунок чекає: '+inv.length+' · '+fgrn(inv.reduce(function(s,d){return s+(d.value||0);},0))+'</div>';
+  if(worst) h+='<div class="al aa">Пляшкове горло: «'+(SM[worst]?SM[worst].lb:worst)+'» — '+wn+'</div>';
+  if(stale.length) h+='<div class="al ar">'+stale.length+' без руху 10+ дн: '+stale.slice(0,3).map(function(d){return d.name;}).join(', ')+'</div>';
+  if(kp.length) h+='<div class="al ai">КП відправлено: '+kp.length+' — зроби фоллоу-ап</div>';
+  document.getElementById("fSigs").innerHTML=h||'<div class="al ag">Все OK</div>';
+}
+
+// ─── ANALYTICS ────────────────────────────────────────────────────────────────
+function renderAnalytics(){
+  var all=pays,bySvc={};
+  for(var i=0;i<all.length;i++){var p=all[i];if(!bySvc[p.svc])bySvc[p.svc]={s:0,c:0};bySvc[p.svc].s+=p.grn;bySvc[p.svc].c++;}
+  var sA=[];for(var k in bySvc)sA.push([k,bySvc[k]]);sA.sort(function(a,b){return b[1].s-a[1].s;});
+  var bySrc={};for(var i=0;i<all.length;i++){var p=all[i];bySrc[p.src]=(bySrc[p.src]||0)+p.grn;}
+  var srA=[];for(var k in bySrc)srA.push([k,bySrc[k]]);srA.sort(function(a,b){return b[1]-a[1];});
+  drawH("cSvc",sA.map(function(x){return SVC[x[0]]||x[0];}),sA.map(function(x){return Math.round(x[1].s);}),"#2E6DA3");
+  drawH("cSrc",srA.map(function(x){return SRC[x[0]]||x[0];}),srA.map(function(x){return Math.round(x[1]);}),"#0F6E56");
+  var avgA=sA.filter(function(x){return x[1].c>0;}).map(function(x){return [x[0],Math.round(x[1].s/x[1].c)];}).sort(function(a,b){return b[1]-a[1];});
+  drawH("cAvg",avgA.map(function(x){return SVC[x[0]]||x[0];}),avgA.map(function(x){return x[1];}),"#854F0B");
+  var tR=all.reduce(function(s,p){return s+p.grn;},0),tC=all.reduce(function(s,p){return s+p.comm;},0),tE=myExp();
+  if(!sA.length)return;
+  document.getElementById("aKpi").innerHTML=
+    card("Топ послуга",(SVC[sA[0][0]]||sA[0][0]))+
+    card("Виручка топ-послуги",fgrn(sA[0][1].s),"bl")+
+    card("Топ джерело",(SRC[srA[0]&&srA[0][0]]||"—"))+
+    card("Середній чек",fgrn(all.length?Math.round(tR/all.length):0))+
+    card("Загальна виручка",fgrn(tR),"bl")+
+    card("Чистий заробіток",fgrn(tC-tE),"gr");
+}
+function drawH(id,labels,data,color){
+  var ctx=document.getElementById(id);if(!ctx)return;
+  if(charts[id])charts[id].destroy();
+  var h=Math.max(180,labels.length*30+40);ctx.parentElement.style.height=h+"px";
+  charts[id]=new Chart(ctx,{type:"bar",data:{labels:labels,datasets:[{data:data,backgroundColor:color+"BB",borderColor:color,borderWidth:1,borderRadius:3}]},
+    options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return " "+fn(c.parsed.x)+" грн";}}}},
+      scales:{x:{grid:{color:"#E4E2D8"},ticks:{font:{size:10},color:"#5F5E5A",callback:function(v){return fn(v);}}},
+              y:{grid:{display:false},ticks:{font:{size:11},color:"#5F5E5A"}}}}});
+}
+
+// ─── PIPELINE ─────────────────────────────────────────────────────────────────
+function renderPipe(){
+  if(!pipe.length){document.getElementById("pipeList").innerHTML='<div class="al ai">Воронка порожня</div>';return;}
+  var sorted=pipe.slice().sort(function(a,b){return b.updated_at-a.updated_at;}),h="";
+  for(var i=0;i<sorted.length;i++){
+    var d=sorted[i],stale=d.stage!=="won"&&d.stage!=="lost"&&ds(d.updated_at)>=10,inv=d.stage==="invoice";
+    var opts="";for(var j=0;j<STAGES.length;j++) opts+='<option value="'+STAGES[j].id+'"'+(d.stage===STAGES[j].id?" selected":"")+'>'+STAGES[j].lb+'</option>';
+    h+='<div class="de">'+
+      '<div style="flex:1 1 140px"><div style="font-weight:500">'+d.name+'</div><div style="font-size:11px;color:#898781;margin-top:1px">'+(SRC[d.src]||d.src)+' · '+(SVC[d.svc]||d.svc)+' · '+fgrn(d.value||0)+'</div></div>'+
+      (inv?'<span class="pi b1">жду оплати</span>':'')+
+      (stale?'<span class="pi b2">'+ds(d.updated_at)+'д.</span>':'')+
+      '<select data-mv="'+d.id+'" style="width:175px;height:26px;font-size:12px">'+opts+'</select>'+
+      '<button class="btn bg bsm" data-ed="'+d.id+'">Ред.</button>'+
+      '<button class="btn bd bsm" data-dd="'+d.id+'">&#10005;</button></div>';
+  }
+  var el=document.getElementById("pipeList");el.innerHTML=h;
+  el.addEventListener("change",async function(ev){
+    var mv=ev.target.getAttribute("data-mv");if(!mv)return;
+    var d=pipe.find(function(x){return x.id===mv;});if(!d)return;
+    d.stage=ev.target.value;
+    var result=await api("PUT","/api/pipeline/"+mv,d);
+    pipe=pipe.map(function(x){return x.id===mv?result:x;});
+    renderKpis();renderPlan();renderFunnel();
+  });
+  el.addEventListener("click",function(ev){
+    var ed=ev.target.getAttribute("data-ed");if(ed){openDealForm(ed);return;}
+    var dd=ev.target.getAttribute("data-dd");
+    if(dd&&confirm("Видалити?")) deleteDeal(dd);
+  });
+}
+function openDealForm(editId){
+  editDealId=editId||null;
+  var d=editId?pipe.find(function(x){return x.id===editId;}):null;
+  document.getElementById("dealFT").textContent=d?"Редагувати угоду":"Нова угода";
+  document.getElementById("dn2").value=d?d.name:"";
+  document.getElementById("dv").value=d?d.value:"";
+  document.getElementById("dstg").value=d?d.stage:"new";
+  document.getElementById("ds2").value=d?(d.svc||"meta"):"meta";
+  document.getElementById("dr2").value=d?(d.src||"baza"):"baza";
+  document.getElementById("dmgr").value=d?(d.mgr||""):"Макс";
+  document.getElementById("dealForm").style.display="block";
+  document.getElementById("dealForm").scrollIntoView({behavior:"smooth"});
+}
+function closeDealForm(){document.getElementById("dealForm").style.display="none";editDealId=null;}
+async function saveDeal(){
+  var name=document.getElementById("dn2").value.trim(),value=parseFloat(document.getElementById("dv").value)||0;
+  if(!name||!value){alert("Вкажи назву і суму");return;}
+  var data={id:editDealId||undefined,name:name,value:value,
+    svc:document.getElementById("ds2").value,stage:document.getElementById("dstg").value,
+    src:document.getElementById("dr2").value,mgr:document.getElementById("dmgr").value.trim()||"Макс"};
+  var result;
+  if(editDealId){
+    result=await api("PUT","/api/pipeline/"+editDealId,data);
+    pipe=pipe.map(function(x){return x.id===editDealId?result:x;});
+  } else {
+    result=await api("POST","/api/pipeline",data);
+    pipe.push(result);
+  }
+  closeDealForm();renderAll();
+}
+async function deleteDeal(id){
+  await api("DELETE","/api/pipeline/"+id);
+  pipe=pipe.filter(function(d){return d.id!==id;});
+  renderAll();
+}
+
+// ─── SETTINGS ────────────────────────────────────────────────────────────────
+function renderMonthsTable(){
+  var sm=sortedMonths();
+  var h='<tr><th>Ключ</th><th>Назва</th><th>План, грн</th><th>Іде</th><th></th></tr>';
+  for(var i=0;i<sm.length;i++){
+    var m=sm[i];
+    h+='<tr>'+
+      '<td style="color:#5F5E5A;font-size:12px">'+m.key+'</td>'+
+      '<td><input class="ie" value="'+m.label+'" data-mk="'+m.key+'" data-field="label" style="width:120px"/></td>'+
+      '<td><input class="ie" type="number" value="'+m.plan+'" data-mk="'+m.key+'" data-field="plan"/></td>'+
+      '<td><input type="checkbox"'+(m.partial?' checked':'')+'  data-mk="'+m.key+'" data-field="partial" style="width:auto;height:auto;margin:0 4px"/></td>'+
+      '<td><button class="btn bd bsm" data-dm="'+m.key+'">&#x412;&#x438;&#x434;&#x430;&#x43b;.</button></td>'+
+      '</tr>';
+  }
+  var tbl=document.getElementById("monthsTbl");
+  tbl.innerHTML=h;
+  tbl.addEventListener("change",async function(ev){
+    var mk=ev.target.getAttribute("data-mk"),field=ev.target.getAttribute("data-field");
+    if(!mk||!field)return;
+    var m=months.find(function(x){return x.key===mk;});if(!m)return;
+    if(field==="plan") m.plan=parseFloat(ev.target.value)||0;
+    if(field==="partial") m.partial=ev.target.checked;
+    if(field==="label") m.label=ev.target.value;
+    var result=await api("PUT","/api/months/"+mk,m);
+    months=months.map(function(x){return x.key===mk?result:x;});
+    renderKpis();renderPlan();buildYrTabs();buildMoTabs();renderMoContent();
+  });
+  tbl.addEventListener("click",async function(ev){
+    var dm=ev.target.getAttribute("data-dm");
+    if(dm&&confirm("Видалити місяць "+dm+"? Оплати залишаться.")){
+      await api("DELETE","/api/months/"+dm);
+      months=months.filter(function(x){return x.key!==dm;});
+      renderAll();
+    }
+  });
+}
+async function saveMonth(){
+  var yr=document.getElementById("my").value.trim();
+  var mo=document.getElementById("mm").value.trim().padStart(2,"0");
+  var lbl=document.getElementById("ml").value.trim();
+  var plan=parseFloat(document.getElementById("mp").value)||150000;
+  if(!yr||!mo||!lbl){alert("Заповни всі поля");return;}
+  var key=yr+"-"+mo;
+  var result=await api("POST","/api/months",{key:key,year:yr,month:mo,label:lbl,plan:plan,partial:false});
+  months.push(result);
+  document.getElementById("addMonthForm").style.display="none";
+  ["my","mm","ml","mp"].forEach(function(id){document.getElementById(id).value="";});
+  renderAll();
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+document.getElementById("mainTabs").addEventListener("click",function(ev){
+  var pn=ev.target.getAttribute("data-pn");if(!pn)return;
+  document.querySelectorAll("#mainTabs .tab").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-pn")===pn);});
+  document.querySelectorAll(".pn").forEach(function(p){p.classList.remove("on");});
+  document.getElementById("pn-"+pn).classList.add("on");
+  if(pn==="analytics") renderAnalytics();
+  if(pn==="settings") renderMonthsTable();
+});
+
+// ─── BUTTONS ─────────────────────────────────────────────────────────────────
+document.getElementById("btnPay").addEventListener("click",function(){openPayForm(null);});
+document.getElementById("btnExp").addEventListener("click",function(){openExpForm(null);});
+document.getElementById("btnDeal").addEventListener("click",function(){openDealForm(null);});
+document.getElementById("savePayBtn").addEventListener("click",savePayment);
+document.getElementById("cancelPayBtn").addEventListener("click",closePayForm);
+document.getElementById("saveExpBtn").addEventListener("click",saveExp);
+document.getElementById("cancelExpBtn").addEventListener("click",closeExpForm);
+document.getElementById("saveDealBtn").addEventListener("click",saveDeal);
+document.getElementById("cancelDealBtn").addEventListener("click",closeDealForm);
+document.getElementById("btnAddMonth").addEventListener("click",function(){document.getElementById("addMonthForm").style.display="block";});
+document.getElementById("cancelMonthBtn").addEventListener("click",function(){document.getElementById("addMonthForm").style.display="none";});
+document.getElementById("saveMonthBtn").addEventListener("click",saveMonth);
+document.getElementById("btnReset").addEventListener("click",async function(){
+  if(!confirm("Скинути ВСІ дані до початкових? Всі твої записи буде видалено."))return;
+  await api("POST","/api/reset",{});
+  var results=await Promise.all([api("GET","/api/pays"),api("GET","/api/months"),api("GET","/api/expenses"),api("GET","/api/pipeline")]);
+  pays=results[0];months=results[1];expenses=results[2];pipe=results[3];
+  initSelects();renderAll();
+});
+["fy","fm","fsvc","fsrc"].forEach(function(id){document.getElementById(id).addEventListener("change",renderPayTable);});
+
+// ─── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll(){
+  updateYearFilter();
+  renderKpis();renderPlan();
+  renderPayTable();renderExpenses();
+  renderFunnel();renderPipe();
+  buildYrTabs();buildMoTabs();renderMoContent();
+  renderMonthsTable();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+loadAll().catch(function(e){
+  document.getElementById("loadMsg").textContent="Помилка завантаження: "+e.message;
+});
+</script>
+</body>
+</html>
