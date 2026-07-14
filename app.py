@@ -50,6 +50,7 @@ def init_db():
         );
     """)
     conn.commit()
+    print("TABLES CREATED OK")
     if not conn.execute("SELECT COUNT(*) FROM months").fetchone()[0]:
         _seed(conn)
     conn.close()
@@ -373,5 +374,8 @@ def reset_data():
 
 if __name__ == "__main__":
     init_db()
+    print("INIT_DB START, path:", DB_PATH)
+    conn = sqlite3.connect(DB_PATH)
+    conn.executescript("""
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
