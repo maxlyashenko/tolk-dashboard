@@ -373,7 +373,35 @@ def reset_data():
 # ─── RUN ──────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    init_db()
+    def init_db():
+    print("INIT_DB START, path:", DB_PATH)
+    conn = sqlite3.connect(DB_PATH)
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS payments (
+            id TEXT PRIMARY KEY, date TEXT, year TEXT, month TEXT,
+            name TEXT, svc TEXT, src TEXT, grn REAL DEFAULT 0,
+            usd REAL DEFAULT 0, rate REAL DEFAULT 0, comm REAL DEFAULT 0,
+            status TEXT DEFAULT 'paid', comment TEXT DEFAULT ''
+        );
+        CREATE TABLE IF NOT EXISTS months (
+            key TEXT PRIMARY KEY, year TEXT, month TEXT, label TEXT,
+            plan REAL DEFAULT 150000, partial INTEGER DEFAULT 0
+        );
+        CREATE TABLE IF NOT EXISTS expenses (
+            id TEXT PRIMARY KEY, date TEXT, year TEXT, month TEXT,
+            name TEXT, type TEXT, who TEXT DEFAULT 'me',
+            amt REAL DEFAULT 0, comment TEXT DEFAULT ''
+        );
+        CREATE TABLE IF NOT EXISTS pipeline (
+            id TEXT PRIMARY KEY, name TEXT, value REAL DEFAULT 0,
+            svc TEXT DEFAULT 'meta', stage TEXT DEFAULT 'new',
+            src TEXT DEFAULT 'baza', mgr TEXT DEFAULT 'Макс',
+            created_at INTEGER, updated_at INTEGER
+        );
+    """)
+    conn.commit()
+    print("TABLES CREATED OK")
+    conn.close()
     print("INIT_DB START, path:", DB_PATH)
     conn = sqlite3.connect(DB_PATH)
     conn.executescript("""
