@@ -25,59 +25,36 @@ def close_db(exc=None):
         db.close()
 
 def init_db():
-    with app.app_context():
-        db = get_db()
-        db.executescript("""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.executescript("""
             CREATE TABLE IF NOT EXISTS payments (
-                id TEXT PRIMARY KEY,
-                date TEXT NOT NULL,
-                year TEXT NOT NULL,
-                month TEXT NOT NULL,
-                name TEXT NOT NULL,
-                svc TEXT NOT NULL,
-                src TEXT NOT NULL,
-                grn REAL NOT NULL DEFAULT 0,
-                usd REAL NOT NULL DEFAULT 0,
-                rate REAL NOT NULL DEFAULT 0,
-                comm REAL NOT NULL DEFAULT 0,
-                status TEXT NOT NULL DEFAULT 'paid',
-                comment TEXT DEFAULT ''
+                id TEXT PRIMARY KEY, date TEXT, year TEXT, month TEXT,
+                name TEXT, svc TEXT, src TEXT, grn REAL DEFAULT 0,
+                usd REAL DEFAULT 0, rate REAL DEFAULT 0, comm REAL DEFAULT 0,
+                status TEXT DEFAULT 'paid', comment TEXT DEFAULT ''
             );
             CREATE TABLE IF NOT EXISTS months (
-                key TEXT PRIMARY KEY,
-                year TEXT NOT NULL,
-                month TEXT NOT NULL,
-                label TEXT NOT NULL,
-                plan REAL NOT NULL DEFAULT 150000,
-                partial INTEGER NOT NULL DEFAULT 0
+                key TEXT PRIMARY KEY, year TEXT, month TEXT, label TEXT,
+                plan REAL DEFAULT 150000, partial INTEGER DEFAULT 0
             );
             CREATE TABLE IF NOT EXISTS expenses (
-                id TEXT PRIMARY KEY,
-                date TEXT NOT NULL,
-                year TEXT NOT NULL,
-                month TEXT NOT NULL,
-                name TEXT NOT NULL,
-                type TEXT NOT NULL,
-                who TEXT NOT NULL DEFAULT 'me',
-                amt REAL NOT NULL DEFAULT 0,
-                comment TEXT DEFAULT ''
+                id TEXT PRIMARY KEY, date TEXT, year TEXT, month TEXT,
+                name TEXT, type TEXT, who TEXT DEFAULT 'me',
+                amt REAL DEFAULT 0, comment TEXT DEFAULT ''
             );
             CREATE TABLE IF NOT EXISTS pipeline (
-                id TEXT PRIMARY KEY,
-                name TEXT NOT NULL,
-                value REAL NOT NULL DEFAULT 0,
-                svc TEXT NOT NULL DEFAULT 'meta',
-                stage TEXT NOT NULL DEFAULT 'new',
-                src TEXT NOT NULL DEFAULT 'baza',
-                mgr TEXT DEFAULT 'Макс',
-                created_at INTEGER,
-                updated_at INTEGER
+                id TEXT PRIMARY KEY, name TEXT, value REAL DEFAULT 0,
+                svc TEXT DEFAULT 'meta', stage TEXT DEFAULT 'new',
+                src TEXT DEFAULT 'baza', mgr TEXT DEFAULT 'Макс',
+                created_at INTEGER, updated_at INTEGER
             );
         """)
-        db.commit()
-        # Seed defaults if months table is empty
-        if not db.execute("SELECT COUNT(*) FROM months").fetchone()[0]:
-            _seed_defaults(db)
+        conn.commit()
+        conn.close()
+        print("DB OK")
+    except Exception as e:
+        print("DB ERROR:", e)
 
 def _seed_defaults(db):
     months = [
